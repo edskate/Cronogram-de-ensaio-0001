@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Ensaios — EdyMichaelCover</title>
+  <style>
+    :root{
+      --bg:#050505;
+      --panel:#111111;
+      --panel-2:#181818;
+      --gold:#d4af37;
+      --gold-2:#f3dc8b;
+      --text:#f6f1e7;
+      --muted:#cbbf98;
+      --line:rgba(212,175,55,.28);
+      --danger:#ff6b6b;
+      --ok:#67d48a;
+      --warn:#ffcf59;
+      --shadow:0 14px 32px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(212,175,55,.08), transparent 20%),
+        radial-gradient(circle at top left, rgba(212,175,55,.05), transparent 18%),
+        linear-gradient(180deg,#040404,#0b0b0b 45%, #060606);
+      min-height:100vh;
+    }
+
+    .wrap{
+      width:min(1200px, 94vw);
+      margin:26px auto 40px;
+    }
+
+    .hero{
+      background:linear-gradient(180deg, rgba(212,175,55,.12), rgba(212,175,55,.03));
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .hero-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    h1,h2,h3{margin:0}
+
+    h1{
+      color:var(--gold-2);
+      font-size:clamp(1.5rem, 3vw, 2.3rem);
+      letter-spacing:.6px;
+    }
+
+    .sub{
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.45;
+    }
+
+    .clock{
+      min-width:220px;
+      text-align:center;
+      background:rgba(0,0,0,.35);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 16px;
+    }
+
+    .clock-time{
+      font-size:1.9rem;
+      color:var(--gold-2);
+      font-weight:700;
+      letter-spacing:1px;
+    }
+
+    .clock-date{
+      margin-top:5px;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, var(--panel), var(--panel-2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .card h2{
+      color:var(--gold-2);
+      font-size:1.15rem;
+      margin-bottom:14px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+
+    .full{grid-column:1/-1}
+
+    label{
+      display:block;
+      color:var(--muted);
+      font-size:.93rem;
+      margin-bottom:6px;
+    }
+
+    input, select, textarea, button{
+      width:100%;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#0b0b0b;
+      color:var(--text);
+      padding:12px 13px;
+      font-size:.98rem;
+    }
+
+    textarea{min-height:88px; resize:vertical}
+
+    input:focus, select:focus, textarea:focus{
+      outline:none;
+      border-color:rgba(243,220,139,.75);
+      box-shadow:0 0 0 3px rgba(212,175,55,.1);
+    }
+
+    .btn-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    button{
+      cursor:pointer;
+      font-weight:700;
+      transition:.18s ease;
+      background:linear-gradient(180deg, #221a08, #171106);
+    }
+
+    button:hover{transform:translateY(-1px)}
+
+    .btn-gold{
+      background:linear-gradient(180deg, #e0c15a, #b99020);
+      color:#16120a;
+      border:none;
+    }
+
+    .btn-danger{
+      background:linear-gradient(180deg, #7f1f1f, #571414);
+      border:1px solid rgba(255,107,107,.35);
+    }
+
+    .btn-print{
+      background:linear-gradient(180deg, #17391f, #102915);
+      border:1px solid rgba(103,212,138,.3);
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .stat{
+      background:#0a0a0a;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .stat .k{
+      color:var(--muted);
+      font-size:.85rem;
+      margin-bottom:6px;
+    }
+
+    .stat .v{
+      color:var(--gold-2);
+      font-size:1.45rem;
+      font-weight:700;
+    }
+
+    .table-wrap{overflow:auto}
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+
+    th, td{
+      border-bottom:1px solid var(--line);
+      padding:11px 10px;
+      text-align:left;
+      vertical-align:top;
+      font-size:.95rem;
+    }
+
+    th{
+      color:var(--gold-2);
+      background:rgba(212,175,55,.06);
+    }
+
+    tbody tr:hover{background:rgba(255,255,255,.02)}
+
+    .badge{
+      display:inline-block;
+      padding:4px 9px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:700;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .ok{background:rgba(103,212,138,.1); color:var(--ok); border-color:rgba(103,212,138,.25)}
+    .warn{background:rgba(255,207,89,.1); color:var(--warn); border-color:rgba(255,207,89,.25)}
+    .danger{background:rgba(255,107,107,.1); color:var(--danger); border-color:rgba(255,107,107,.25)}
+
+    .schedule-list{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .schedule-item{
+      background:#0a0a0a;
+      border:1px solid var(--line);
+      border-radius:15px;
+      padding:12px;
+    }
+
+    .schedule-day{
+      color:var(--gold-2);
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .schedule-meta{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
+    }
+
+    .alert-box{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,107,107,.24);
+      background:rgba(255,107,107,.08);
+      color:#ffd6d6;
+      display:none;
+    }
+
+    .muted{color:var(--muted)}
+
+    .footer-note{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.45;
+    }
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+
+    @media (max-width: 620px){
+      .form-grid{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr}
+      .hero{padding:18px}
+      .card{padding:16px}
+      .clock{min-width:auto; width:100%}
+    }
+
+    @media print{
+      body{background:#fff; color:#000}
+      .wrap{width:100%; margin:0}
+      .hero, .card{
+        background:#fff;
+        color:#000;
+        box-shadow:none;
+        border:1px solid #999;
+      }
+      .sub,.clock-date,.muted,.schedule-meta,.footer-note,label{color:#333}
+      h1,h2,h3,.schedule-day,th,.clock-time,.stat .v{color:#000}
+      input, select, textarea, button, .btn-row, .no-print{display:none !important}
+      .grid{display:block}
+      .card{margin-bottom:14px}
+      .alert-box{display:block !important; color:#000; background:#f4f4f4; border-color:#bbb}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <h1>🎭 Painel de Ensaios — EdyMichaelCover</h1>
+          <div class="sub">Cronograma semanal automático, controle de atraso, ranking de disciplina, alerta após 3 atrasos e botão para gerar PDF pelo navegador.</div>
+        </div>
+        <div class="clock">
+          <div class="clock-time" id="clockTime">00:00:00</div>
+          <div class="clock-date" id="clockDate">--</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Cadastro de ensaio / presença</h2>
+        <div class="form-grid">
+          <div>
+            <label for="dancer">Dançarino</label>
+            <select id="dancer">
+              <option>Abizael</option>
+              <option>Renan</option>
+              <option>Patrick</option>
+              <option>JhonnyMendes</option>
+            </select>
+          </div>
+          <div>
+            <label for="dayType">Dia do ensaio</label>
+            <select id="dayType">
+              <option value="Segunda">Segunda</option>
+              <option value="Terça">Terça</option>
+              <option value="Quarta">Quarta</option>
+              <option value="Quinta">Quinta</option>
+              <option value="Sexta">Sexta</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </div>
+          <div>
+            <label for="expectedTime">Horário esperado</label>
+            <input id="expectedTime" type="time" value="20:00" />
+          </div>
+          <div>
+            <label for="arrivalTime">Horário de chegada</label>
+            <input id="arrivalTime" type="time" value="20:10" />
+          </div>
+          <div>
+            <label for="rehearsalFocus">Foco do ensaio</label>
+            <select id="rehearsalFocus">
+              <option>Técnica</option>
+              <option>Limpeza</option>
+              <option>Passagem de show</option>
+              <option>Correção individual</option>
+              <option>Pós-show</option>
+            </select>
+          </div>
+          <div>
+            <label for="showDay">Dia do show na semana</label>
+            <select id="showDay">
+              <option value="Sexta">Sexta</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+              <option value="Nenhum">Sem show na semana</option>
+            </select>
+          </div>
+          <div class="full">
+            <label for="notes">Observação</label>
+            <textarea id="notes" placeholder="Ex.: atraso recorrente, correção de marcação, limpeza de finalização..."></textarea>
+          </div>
+        </div>
+
+        <div class="btn-row no-print">
+          <button class="btn-gold" id="saveBtn">Salvar registro</button>
+          <button id="cronogramaBtn">Gerar cronograma automático</button>
+          <button class="btn-print" id="printBtn">Gerar PDF</button>
+          <button class="btn-danger" id="clearBtn">Limpar tudo</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Total de registros</div>
+            <div class="v" id="totalRegistros">0</div>
+          </div>
+          <div class="stat">
+            <div class="k">Atrasos registrados</div>
+            <div class="v" id="totalAtrasos">0</div>
+          </div>
+          <div class="stat">
+            <div class="k">Pior índice</div>
+            <div class="v" id="piorIndice">--</div>
+          </div>
+          <div class="stat">
+            <div class="k">Show da semana</div>
+            <div class="v" id="showSemana">Sexta</div>
+          </div>
+        </div>
+
+        <div id="globalAlert" class="alert-box"></div>
+
+        <div class="footer-note">
+          Regra sugerida: até <strong>10 minutos</strong> = atraso leve. Acima disso = atraso crítico. Ao completar <strong>3 atrasos</strong>, o sistema gera um alerta automático.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Cronograma semanal automático</h2>
+        <div id="scheduleList" class="schedule-list"></div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>Histórico de presença e atraso</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Dançarino</th>
+              <th>Dia</th>
+              <th>Esperado</th>
+              <th>Chegada</th>
+              <th>Atraso</th>
+              <th>Status</th>
+              <th>Foco</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:18px;">
+      <h2>Ranking de disciplina</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Dançarino</th>
+              <th>Registros</th>
+              <th>Atrasos</th>
+              <th>Minutos de atraso</th>
+              <th>Alerta</th>
+              <th>Nível</th>
+            </tr>
+          </thead>
+          <tbody id="rankingBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'edyMichaelCoverPainelEnsaios';
+
+    const dancerEl = document.getElementById('dancer');
+    const dayTypeEl = document.getElementById('dayType');
+    const expectedTimeEl = document.getElementById('expectedTime');
+    const arrivalTimeEl = document.getElementById('arrivalTime');
+    const rehearsalFocusEl = document.getElementById('rehearsalFocus');
+    const showDayEl = document.getElementById('showDay');
+    const notesEl = document.getElementById('notes');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const printBtn = document.getElementById('printBtn');
+    const cronogramaBtn = document.getElementById('cronogramaBtn');
+    const historyBody = document.getElementById('historyBody');
+    const rankingBody = document.getElementById('rankingBody');
+    const scheduleList = document.getElementById('scheduleList');
+    const globalAlert = document.getElementById('globalAlert');
+
+    const totalRegistrosEl = document.getElementById('totalRegistros');
+    const totalAtrasosEl = document.getElementById('totalAtrasos');
+    const piorIndiceEl = document.getElementById('piorIndice');
+    const showSemanaEl = document.getElementById('showSemana');
+
+    let registros = loadData();
+
+    function loadData(){
+      try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      }catch{
+        return [];
+      }
+    }
+
+    function saveData(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+    }
+
+    function pad(n){
+      return String(n).padStart(2,'0');
+    }
+
+    function formatToday(){
+      const now = new Date();
+      return `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()}`;
+    }
+
+    function timeToMinutes(hhmm){
+      const [h,m] = hhmm.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function minutesToText(mins){
+      if(mins <= 0) return '0 min';
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      if(h > 0 && m > 0) return `${h}h ${m}min`;
+      if(h > 0) return `${h}h`;
+      return `${m} min`;
+    }
+
+    function getDelayStatus(delay){
+      if(delay <= 0) return {label:'No horário', cls:'ok'};
+      if(delay <= 10) return {label:'Atraso leve', cls:'warn'};
+      return {label:'Atraso crítico', cls:'danger'};
+    }
+
+    function calculateDelay(expected, arrival){
+      return Math.max(0, timeToMinutes(arrival) - timeToMinutes(expected));
+    }
+
+    function saveRegistro(){
+      // BLOQUEIO DE HORÁRIO MÍNIMO (19:30)
+      const minTime = "19:30";
+      if(arrivalTimeEl.value < minTime){
+        alert("⛔ Horário de chegada bloqueado! Só é permitido registrar após 19:30.");
+        return;
+      }
+      const delay = calculateDelay(expectedTimeEl.value, arrivalTimeEl.value);
+      const status = getDelayStatus(delay);
+
+      const item = {
+        id: Date.now(),
+        data: formatToday(),
+        dancer: dancerEl.value,
+        day: dayTypeEl.value,
+        expected: expectedTimeEl.value,
+        arrival: arrivalTimeEl.value,
+        delay,
+        statusLabel: status.label,
+        statusClass: status.cls,
+        focus: rehearsalFocusEl.value,
+        showDay: showDayEl.value,
+        notes: notesEl.value.trim()
+      };
+
+      registros.unshift(item);
+      saveData();
+      notesEl.value = '';
+      renderAll();
+    }
+
+    function aggregateRanking(){
+      const nomes = ['Abizael','Renan','Patrick','JhonnyMendes'];
+      const mapa = {};
+
+      nomes.forEach(nome => {
+        mapa[nome] = { dancer:nome, total:0, atrasos:0, minutos:0 };
+      });
+
+      registros.forEach(r => {
+        if(!mapa[r.dancer]) mapa[r.dancer] = { dancer:r.dancer, total:0, atrasos:0, minutos:0 };
+        mapa[r.dancer].total += 1;
+        if(r.delay > 0){
+          mapa[r.dancer].atrasos += 1;
+          mapa[r.dancer].minutos += r.delay;
+        }
+      });
+
+      return Object.values(mapa).sort((a,b) => {
+        if(a.atrasos !== b.atrasos) return a.atrasos - b.atrasos;
+        if(a.minutos !== b.minutos) return a.minutos - b.minutos;
+        return b.total - a.total;
+      });
+    }
+
+    function nivelDisciplina(atrasos, minutos){
+      if(atrasos === 0) return {texto:'Excelente', cls:'ok'};
+      if(atrasos <= 2 && minutos <= 20) return {texto:'Atenção', cls:'warn'};
+      return {texto:'Crítico', cls:'danger'};
+    }
+
+    function renderHistory(){
+      if(!registros.length){
+        historyBody.innerHTML = `<tr><td colspan="9" class="muted">Nenhum registro salvo ainda.</td></tr>`;
+        return;
+      }
+
+      historyBody.innerHTML = registros.map(r => `
+        <tr>
+          <td>${r.data}</td>
+          <td>${r.dancer}</td>
+          <td>${r.day}</td>
+          <td>${r.expected}</td>
+          <td>${r.arrival}</td>
+          <td>${minutesToText(r.delay)}</td>
+          <td><span class="badge ${r.statusClass}">${r.statusLabel}</span></td>
+          <td>${r.focus}</td>
+          <td>${r.notes || '-'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderRanking(){
+      const ranking = aggregateRanking();
+
+      rankingBody.innerHTML = ranking.map((r, idx) => {
+        const alert = r.atrasos >= 3 ? '<span class="badge danger">3 atrasos = alerta</span>' : '<span class="badge ok">Normal</span>';
+        const nivel = nivelDisciplina(r.atrasos, r.minutos);
+        return `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${r.dancer}</td>
+            <td>${r.total}</td>
+            <td>${r.atrasos}</td>
+            <td>${minutesToText(r.minutos)}</td>
+            <td>${alert}</td>
+            <td><span class="badge ${nivel.cls}">${nivel.texto}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      const totalAtrasos = registros.filter(r => r.delay > 0).length;
+      totalRegistrosEl.textContent = registros.length;
+      totalAtrasosEl.textContent = totalAtrasos;
+      showSemanaEl.textContent = showDayEl.value;
+
+      const pior = [...ranking].sort((a,b) => {
+        if(a.atrasos !== b.atrasos) return b.atrasos - a.atrasos;
+        return b.minutos - a.minutos;
+      })[0];
+
+      piorIndiceEl.textContent = pior && (pior.atrasos > 0 || pior.total > 0)
+        ? `${pior.dancer}`
+        : '--';
+
+      const alertas = ranking.filter(r => r.atrasos >= 3);
+      if(alertas.length){
+        globalAlert.style.display = 'block';
+        globalAlert.innerHTML = `🚨 Alerta automático: ${alertas.map(a => `<strong>${a.dancer}</strong>`).join(', ')} atingiu/atingiram 3 ou mais atrasos.`;
+      } else {
+        globalAlert.style.display = 'none';
+        globalAlert.innerHTML = '';
+      }
+    }
+
+    function gerarCronograma(){
+      const showDay = showDayEl.value;
+      const base = [
+        {
+          day:'Segunda',
+          time:'20:00 – 21:30',
+          title:'Ensaio técnico',
+          desc:'Montagem, marcação, aquecimento e alinhamento da base coreográfica.'
+        },
+        {
+          day:'Quarta',
+          time:'20:00 – 21:30',
+          title:'Limpeza e sincronismo',
+          desc:'Correção de braços, tempo, fluidez, formação e detalhes do show.'
+        }
+      ];
+
+      if(showDay === 'Nenhum'){
+        base.push({
+          day:'Sexta',
+          time:'20:00 – 21:20',
+          title:'Passagem completa',
+          desc:'Run do repertório, resistência, entradas e finalização.'
+        });
+      } else {
+        base.push({
+          day:showDay,
+          time: showDay === 'Domingo' ? '15:00 – Show / pós-show ajuste' : '21:00 – Show / 22:00 – 23:00 ajuste',
+          title:'Dia de show',
+          desc:'Executar o show e revisar falhas logo após, quando possível.'
+        });
+      }
+
+      base.push({
+        day:'Terça',
+        time:'20:10 – 21:00',
+        title:'Correção individual',
+        desc:'Dia estratégico para corrigir atrasos, pontos fracos e reposição sem travar o grupo.'
+      });
+
+      const ordem = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+      base.sort((a,b) => ordem.indexOf(a.day) - ordem.indexOf(b.day));
+
+      scheduleList.innerHTML = base.map(item => `
+        <div class="schedule-item">
+          <div class="schedule-day">${item.day} — ${item.title}</div>
+          <div class="schedule-meta"><strong>Horário:</strong> ${item.time}<br>${item.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    function tickClock(){
+      const now = new Date();
+      const time = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      const date = now.toLocaleDateString('pt-BR', {
+        weekday:'long',
+        day:'2-digit',
+        month:'2-digit',
+        year:'numeric'
+      });
+      document.getElementById('clockTime').textContent = time;
+      document.getElementById('clockDate').textContent = date;
+    }
+
+    function renderAll(){
+      renderHistory();
+      renderRanking();
+      gerarCronograma();
+    }
+
+    saveBtn.addEventListener('click', saveRegistro);
+    cronogramaBtn.addEventListener('click', gerarCronograma);
+    printBtn.addEventListener('click', () => window.print());
+    clearBtn.addEventListener('click', () => {
+      const ok = confirm('Deseja apagar todos os registros do painel?');
+      if(!ok) return;
+      registros = [];
+      saveData();
+      renderAll();
+    });
+
+    showDayEl.addEventListener('change', gerarCronograma);
+
+    setInterval(tickClock, 1000);
+    tickClock();
+    renderAll();
+  </script>
+</body>
+</html>
