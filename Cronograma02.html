@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>EDYMICHAELCOVER — Hierarquia & Disciplina</title>
+
+<style>
+body{
+    background:black;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1,h2,h3{
+    color:gold;
+}
+
+.container{
+    background:#111;
+    padding:20px;
+    margin:20px auto;
+    width:90%;
+    max-width:800px;
+    border-radius:12px;
+    box-shadow:0 0 15px gold;
+}
+
+button{
+    background:gold;
+    border:none;
+    padding:12px;
+    margin:10px;
+    cursor:pointer;
+    font-weight:bold;
+    width:90%;
+}
+
+input, select{
+    padding:10px;
+    margin:5px;
+    width:90%;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+td,th{
+    border:1px solid gold;
+    padding:8px;
+}
+
+.alerta{
+    color:red;
+    font-weight:bold;
+}
+.ok{
+    color:#00ff88;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎭 EDYMICHAELCOVER</h1>
+<h2>Hierarquia & Disciplina Oficial</h2>
+
+<div class="container">
+
+<h2>🏛️ HIERARQUIA</h2>
+
+<p><b>1. CONTRATANTE — Hard Rock</b><br>
+Responsável pelo evento e estrutura</p>
+
+<p><b>2. PRODUTOR — Jerônimo</b><br>
+Organização e logística</p>
+
+<p><b>3. ARTISTA — Edy</b><br>
+Direção artística e coreografia</p>
+
+<p><b>4. DANÇARINOS & BANDA</b><br>
+Execução do espetáculo</p>
+
+</div>
+
+<div class="container">
+
+<h2>⏱️ REGISTRO DE CHEGADA</h2>
+
+<select id="nome">
+<option>Abizael</option>
+<option>Renan</option>
+<option>Patrick</option>
+</select>
+
+<input type="time" id="hora">
+
+<button onclick="registrar()">Registrar Entrada</button>
+
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Hora</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
+</table>
+
+</div>
+
+<div class="container">
+
+<h2>🚨 SISTEMA DE DISCIPLINA</h2>
+
+<p>3 atrasos = ALERTA AUTOMÁTICO</p>
+
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Atrasos</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="ranking"></tbody>
+</table>
+
+</div>
+
+<div class="container">
+
+<h2>📄 EXPORTAR</h2>
+
+<button onclick="gerarPDF()">GERAR PDF</button>
+
+</div>
+
+<script>
+
+let dados = JSON.parse(localStorage.getItem("dados")) || {};
+let limite = "19:30";
+
+function registrar(){
+
+let nome = document.getElementById("nome").value;
+let hora = document.getElementById("hora").value;
+
+if(!hora){
+    alert("Informe o horário");
+    return;
+}
+
+if(!dados[nome]){
+    dados[nome] = { atrasos:0 };
+}
+
+let status = "ok";
+
+if(hora > limite){
+    status = "atraso";
+    dados[nome].atrasos++;
+}
+
+salvar(nome,hora,status);
+atualizar();
+
+}
+
+function salvar(nome,hora,status){
+
+let tabela = document.getElementById("tabela");
+
+let linha = `<tr>
+<td>${nome}</td>
+<td>${hora}</td>
+<td class="${status == 'atraso' ? 'alerta' : 'ok'}">
+${status == 'atraso' ? 'ATRASADO' : 'NO HORÁRIO'}
+</td>
+</tr>`;
+
+tabela.innerHTML += linha;
+
+localStorage.setItem("dados", JSON.stringify(dados));
+
+}
+
+function atualizar(){
+
+let ranking = document.getElementById("ranking");
+ranking.innerHTML = "";
+
+for(let nome in dados){
+
+let atrasos = dados[nome].atrasos;
+let status = atrasos >= 3 ? "ALERTA" : "OK";
+
+ranking.innerHTML += `
+<tr>
+<td>${nome}</td>
+<td>${atrasos}</td>
+<td class="${status == 'ALERTA' ? 'alerta' : 'ok'}">${status}</td>
+</tr>
+`;
+
+}
+
+}
+
+function gerarPDF(){
+window.print();
+}
+
+atualizar();
+
+</script>
+
+<style>
+@media print{
+body{
+background:white;
+color:black;
+}
+.container{
+box-shadow:none;
+border:1px solid black;
+}
+button{
+display:none;
+}
+}
+</style>
+
+</body>
+</html>
